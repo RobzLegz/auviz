@@ -18,10 +18,12 @@ CHANNELS = 1
 RATE = 44100
 FPS = 60
 
+screen_width, screen_height = 2000, 1000
+
 # Initialize Pygame and set the display mode to fullscreen
 pygame.init()
 screen_info = pygame.display.Info()
-screen = pygame.display.set_mode((screen_info.current_w, screen_info.current_h))
+screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Real-time Audio Visualizer")
 
 # Create a clock object to control frame rate
@@ -47,7 +49,7 @@ while running:
     screen.fill((0, 0, 0))
 
     # Create a new Matplotlib figure for each frame
-    plt.figure(figsize=(screen_info.current_w / 100, screen_info.current_h / 100), facecolor='black')
+    plt.figure(figsize=(screen_width / 170, screen_height / 170), facecolor='black')
 
     # Plot the waveform of the microphone input with a random color
     c = random_rgb_color()
@@ -57,7 +59,7 @@ while running:
     plt.axis('off')
 
     # Save the plot to a temporary image file
-    plt.savefig("./tmp/temp_plot.png", bbox_inches='tight', dpi=100, transparent=True)
+    plt.savefig("./tmp/temp_plot.png", bbox_inches='tight', dpi=200, transparent=True)
 
     # Load and display the temporary image on the Pygame screen
     plot_img = pygame.image.load("./tmp/temp_plot.png")
