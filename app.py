@@ -61,10 +61,10 @@ class Line(object):
             plt.axis('off')
 
             # Save the plot to a temporary image file
-            plt.savefig("temp_plot.png", bbox_inches='tight', pad_inches=0, dpi=100, transparent=True)
+            plt.savefig("./venv/temp_plot.png", bbox_inches='tight', pad_inches=0, dpi=100, transparent=True)
 
             # Load and display the temporary image on the Pygame screen
-            plot_img = pygame.image.load("temp_plot.png")
+            plot_img = pygame.image.load("./venv/temp_plot.png")
             screen.blit(plot_img, (0, 0))
 
             # Update the display
