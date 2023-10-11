@@ -2,80 +2,86 @@ import pygame
 import numpy as np
 import matplotlib.pyplot as plt
 import pyaudio
-import os
 import random
 
-def random_rgb_color():
-    r = random.random()
-    g = random.random()
-    b = random.random()
-    return (r, g, b)
+class Line(object):
+    def __init__(self):
+        self.WINDOW_WIDTH = 1080
+        self.WINDOW_HEIGHT = 720
+        self.CHUNK_SIZE = 1024
+        self.FORMAT = pyaudio.paInt16
+        self.CHANNELS = 1
+        self.RATE = 44100
+        self.FPS = 60
 
-# Parameters for audio capture and visualization
-CHUNK_SIZE = 1024
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 44100
-FPS = 60
+    def random_rgb_color(_):
+        r = random.random()
+        g = random.random()
+        b = random.random()
+       
+        return (r, g, b)
+    
 
-screen_width, screen_height = 2000, 1000
+    def go(self):
+        pygame.init()
+        screen_width, screen_height = 1600, 800
+        screen = pygame.display.set_mode((screen_width, screen_height))
+        pygame.display.set_caption("Real-time Audio Visualizer")
 
-# Initialize Pygame and set the display mode to fullscreen
-pygame.init()
-screen_info = pygame.display.Info()
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("Real-time Audio Visualizer")
+        # Create a clock object to control frame rate
+        clock = pygame.time.Clock()
 
-# Create a clock object to control frame rate
-clock = pygame.time.Clock()
+        # Initialize PyAudio
+        audio = pyaudio.PyAudio()
+        stream = audio.open(format=self.FORMAT, channels=self.CHANNELS, rate=self.RATE, input=True, frames_per_buffer=self.CHUNK_SIZE)
 
-# Initialize PyAudio
-audio = pyaudio.PyAudio()
-stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK_SIZE)
+        # Main visualization loop
+        running = True
 
-# Main visualization loop
-running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
 
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+            # Read audio data from the microphone
+            audio_data = stream.read(self.CHUNK_SIZE)
+            audio_array = np.frombuffer(audio_data, dtype=np.int16)
 
-    # Read audio data from the microphone
-    audio_data = stream.read(CHUNK_SIZE)
-    audio_array = np.frombuffer(audio_data, dtype=np.int16)
+            # Clear the screen
+            screen.fill((0, 0, 0))
 
-    # Clear the screen
-    screen.fill((0, 0, 0))
+            # Plot the waveform of the microphone input
+            c = self.random_rgb_color()
 
-    # Create a new Matplotlib figure for each frame
-    plt.figure(figsize=(screen_width / 170, screen_height / 170), facecolor='black')
+            plt.figure(figsize=(self.WINDOW_WIDTH / 60, self.WINDOW_HEIGHT / 60), facecolor='black')
 
-    # Plot the waveform of the microphone input with a random color
-    c = random_rgb_color()
-    plt.plot(audio_array, color=c)
-    plt.xlim(0, len(audio_array))
-    plt.ylim(-32768, 32768)  # Adjust the y-axis range as needed
-    plt.axis('off')
+            plt.plot(audio_array, color=c)
+            plt.xlim(0, len(audio_array))
+            plt.ylim(-32768, 32768)  # Adjust the y-axis range as needed
+            plt.axis('off')
 
-    # Save the plot to a temporary image file
-    plt.savefig("./tmp/temp_plot.png", bbox_inches='tight', dpi=200, transparent=True)
+            # Save the plot to a temporary image file
+            plt.savefig("temp_plot.png", bbox_inches='tight', pad_inches=0, dpi=100, transparent=True)
 
-    # Load and display the temporary image on the Pygame screen
-    plot_img = pygame.image.load("./tmp/temp_plot.png")
-    screen.blit(plot_img, (0, 0))
+            # Load and display the temporary image on the Pygame screen
+            plot_img = pygame.image.load("temp_plot.png")
+            screen.blit(plot_img, (0, 0))
 
-    # Update the display
-    pygame.display.flip()
+            # Update the display
+            pygame.display.flip()
 
-    # Control frame rate
-    clock.tick(FPS)
+            # Control frame rate
+            clock.tick(self.FPS)
 
-    # Close the Matplotlib figure to avoid overlapping
-    plt.close()
+            plt.close()
 
-# Clean up
-stream.stop_stream()
-stream.close()
-audio.terminate()
-pygame.quit()
+        # Clean up
+        stream.stop_stream()
+        stream.close()
+        audio.terminate()
+        pygame.quit()
+
+
+if __name__ == "__main__":
+    anim = Line()
+    anim.go()
