@@ -22,7 +22,6 @@ stream = p.open(
     channels=1,
     rate=44100,
     input=True,
-    input_device_index=8, #39 / 8  # Adjust this to your desired input device index
     frames_per_buffer=1024
 )
 # List to store shape data
@@ -48,7 +47,7 @@ while running:
         size = int(volume / 2000 * 10)  # Adjust the scaling factor as needed
         print(volume)
         # Generate random shapes based on volume with random colors
-        if volume > 10700:
+        if volume > 2000:
             shape_type = random.choice(SHAPE_TYPES)
             color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
