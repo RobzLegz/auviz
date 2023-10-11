@@ -16,7 +16,9 @@ class Line(object):
         self.lines = []
 
         pygame.init()
+        pygame.display.set_caption("Real-time Audio Visualizer")
         self.screen = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT))
+        self.clock = pygame.time.Clock()
 
     def random_rgb_color(_):
         r = random.random()
@@ -30,12 +32,39 @@ class Line(object):
             x1, y1, x2, y2, color = line
             pygame.draw.line(self.screen, color, (x1, y1), (x2, y2), 2)
     
+    def update_plot(self, audio_data):
+        # Calculate the volume (root mean square)
+        volume = np.sqrt(np.mean(audio_data**2))
+        
+        if volume > 1:
+            # Random starting point
+            line_x1 = np.random.randint(0, self.WINDOW_WIDTH)
+            line_y1 = np.random.randint(0, self.WINDOW_HEIGHT)
+            
+            # Random color
+            color = (np.random.randint(0, 256), np.random.randint(0, 256), np.random.randint(0, 256))
+            
+            # Calculate line length based on volume
+            line_length = int(volume * 3)  # Adjust the multiplier for line length
+            
+            # Random line angle
+            line_angle = np.random.uniform(0, 2 * np.pi)
+            
+            line_x2 = line_x1 + line_length * np.cos(line_angle)
+            line_y2 = line_y1 + line_length * np.sin(line_angle)
+            
+            # Add the new line to the list
+            self.lines.append((line_x1, line_y1, line_x2, line_y2, color))
+            
+            # Limit the list to 100 lines
+            if len(self.lines) > 20:
+                self.lines.pop(0)
+            
+            self.draw_lines()
 
     def go(self):
-        pygame.display.set_caption("Real-time Audio Visualizer")
 
         # Create a clock object to control frame rate
-        clock = pygame.time.Clock()
 
         # Initialize PyAudio
         audio = pyaudio.PyAudio()
@@ -71,13 +100,18 @@ class Line(object):
 
             # Load and display the temporary image on the Pygame screen
             plot_img = pygame.image.load("./venv/temp_plot.png")
+            
+            
             self.screen.blit(plot_img, (0, 0))
+
+            self.update_plot(audio_array)
 
             # Update the display
             pygame.display.flip()
+            pygame.display.update()
 
             # Control frame rate
-            clock.tick(self.FPS)
+            self.clock.tick(self.FPS)
 
             plt.close()
 
