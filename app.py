@@ -45,7 +45,7 @@ class Line(object):
             color = (np.random.randint(0, 256), np.random.randint(0, 256), np.random.randint(0, 256))
             
             # Calculate line length based on volume
-            line_length = int(volume * 3)  # Adjust the multiplier for line length
+            line_length = int(volume * 1.5)  # Adjust the multiplier for line length
             
             # Random line angle
             line_angle = np.random.uniform(0, 2 * np.pi)
@@ -56,8 +56,7 @@ class Line(object):
             # Add the new line to the list
             self.lines.append((line_x1, line_y1, line_x2, line_y2, color))
             
-            # Limit the list to 100 lines
-            if len(self.lines) > 20:
+            if len(self.lines) > 5:
                 self.lines.pop(0)
             
             self.draw_lines()
