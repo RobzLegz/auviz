@@ -24,8 +24,7 @@ class Line(object):
 
     def go(self):
         pygame.init()
-        screen_width, screen_height = 1600, 800
-        screen = pygame.display.set_mode((screen_width, screen_height))
+        screen = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT))
         pygame.display.set_caption("Real-time Audio Visualizer")
 
         # Create a clock object to control frame rate
