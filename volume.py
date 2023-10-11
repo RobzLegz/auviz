@@ -13,10 +13,6 @@ class Line(object):
         self.CHANNELS = 1
         self.RATE = 44100
         self.FPS = 60
-        self.lines = []
-
-        pygame.init()
-        self.screen = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT))
 
     def random_rgb_color(_):
         r = random.random()
@@ -25,13 +21,10 @@ class Line(object):
        
         return (r, g, b)
     
-    def draw_lines(self):
-        for line in self.lines:
-            x1, y1, x2, y2, color = line
-            pygame.draw.line(self.screen, color, (x1, y1), (x2, y2), 2)
-    
 
     def go(self):
+        pygame.init()
+        screen = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT))
         pygame.display.set_caption("Real-time Audio Visualizer")
 
         # Create a clock object to control frame rate
@@ -54,7 +47,7 @@ class Line(object):
             audio_array = np.frombuffer(audio_data, dtype=np.int16)
 
             # Clear the screen
-            self.screen.fill((0, 0, 0))
+            screen.fill((0, 0, 0))
 
             # Plot the waveform of the microphone input
             c = self.random_rgb_color()
@@ -71,7 +64,7 @@ class Line(object):
 
             # Load and display the temporary image on the Pygame screen
             plot_img = pygame.image.load("./venv/temp_plot.png")
-            self.screen.blit(plot_img, (0, 0))
+            screen.blit(plot_img, (0, 0))
 
             # Update the display
             pygame.display.flip()

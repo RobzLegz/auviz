@@ -9,8 +9,6 @@ class Geometry(object):
         self.WINDOW_HEIGHT = 720
         self.FPS = 60
 
-    
-
     def go(self):
         # Pygame initialization
         pygame.init()
