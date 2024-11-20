@@ -59,7 +59,7 @@ class Line(object):
             if len(self.lines) > 5:
                 self.lines.pop(0)
             
-            self.draw_lines()
+            # self.draw_lines()
 
     def go(self):
 
@@ -67,7 +67,7 @@ class Line(object):
 
         # Initialize PyAudio
         audio = pyaudio.PyAudio()
-        stream = audio.open(format=self.FORMAT, channels=self.CHANNELS, rate=self.RATE, input=True, frames_per_buffer=self.CHUNK_SIZE)
+        stream = audio.open(format=self.FORMAT, channels=self.CHANNELS, rate=self.RATE, input=True, frames_per_buffer=self.CHUNK_SIZE, input_device_index=2)
 
         # Main visualization loop
         running = True
